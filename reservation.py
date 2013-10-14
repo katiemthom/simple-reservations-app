@@ -109,6 +109,7 @@ def read_existing_reservations():
         end_date = reservation_dict["reservation_end_date"]
         reservations_dict[unit_id] = reservations_dict.get(unit_id,[])
         reservations_dict[unit_id].append((start_date,end_date))
+    reservations_file.close()
     return reservations_dict
 
 def available(units, reservations, start_date, occupants, stay_length):
@@ -138,12 +139,11 @@ def is_available(units, reservations, start_date, occupants, stay_length):
             reservation_start = datetime.date(reservation_start[0],reservation_start[1],reservation_start[2])
             reservation_end = reservation[1]
             reservation_end = datetime.date(reservation_end[0],reservation_end[1],reservation_end[2])
-            if reservation_start < desired_start < reservation_end:
+            if reservation_start < desired_start < reservation_end or reservation_start < desired_end < reservation_end:
                 unit_available = False
                 continue
-            if reservation_start < desired_end < reservation_end:
-                unit_available = False 
-                continue
+        ## make overlap function
+        ## if start2 > end 1 or start1 >= end2 # not overlap
         if unit_available: 
             available_units_list.append(unit_id) 
     return available_units_list
